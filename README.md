@@ -1,6 +1,6 @@
 # Claude Agent
 
-Ejemplo básico de uso de la API de Claude con Python.
+Ejemplo bï¿½sico de uso de la API de Claude con Python.
 
 ## Setup
 
@@ -14,6 +14,7 @@ Ejemplo básico de uso de la API de Claude con Python.
    ANTHROPIC_API_KEY=tu_api_key_aqui
    ```
 
-## Código
+## Cï¿½digo
 
-- `01_hello.py`: Ejemplo básico que envía un mensaje a Claude y recibe una respuesta. Usa el modelo `claude-4-sonnet-20250514` para generar un poema corto sobre el océano.
+- `01_hello.py`: Ejemplo bï¿½sico que envï¿½a un mensaje a Claude y recibe una respuesta. Usa el modelo `claude-4-sonnet-20250514` para generar un poema corto sobre el ocï¿½ano.
+- `02_chat.py`: Ejemplo de conversaciï¿½n con mï¿½ltiples mensajes. Mantiene el historial de la conversaciï¿½n y demuestra cï¿½mo hacer preguntas de seguimiento usando el contexto previo.
