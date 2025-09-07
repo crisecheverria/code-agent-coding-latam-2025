@@ -19,3 +19,4 @@ Ejemplo b�sico de uso de la API de Claude con Python.
 - `01_hello.py`: Ejemplo basico que envia un mensaje a Claude y recibe una respuesta. Usa el modelo `claude-4-sonnet-20250514` para generar un poema corto sobre el oceano.
 - `02_chat.py`: Ejemplo de conversacion con multiples mensajes. Mantiene el historial de la conversacion y demuestra como hacer preguntas de seguimiento usando el contexto previo.
 - `03_chat.py`: Chat interactivo por terminal con Claude. Permite mantener una conversación continua escribiendo mensajes en la consola. Escribe 'exit' o 'quit' para salir del chat.
+- `04_system_prompt.py`: Chat interactivo con system prompt personalizado. Demuestra como usar system prompts para definir el comportamiento del asistente como un ayudante de codificación que proporciona explicaciones claras y concisas.
