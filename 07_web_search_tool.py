@@ -30,7 +30,19 @@ def chat(messages, system=None, temperature=0.7):
                 "type": "text_editor_20250728",
                 "name": "str_replace_based_edit_tool",
                 "max_characters": 10000,
-            }
+            },
+            {
+                "type": "web_search_20250305",
+                "name": "web_search",
+                "max_uses": 5,
+                "allowed_domains": [
+                    "stackoverflow.com",
+                    "github.com",
+                    "docs.python.org",
+                    "developer.mozilla.org",
+                    "w3schools.com",
+                ],
+            },
         ],
     }
 
