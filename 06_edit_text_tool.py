@@ -37,16 +37,6 @@ def chat(messages, system=None, temperature=0.7):
     message = client.messages.create(**params)
     return message
 
-def backup_file(file_path):
-    """Create a backup of a file before editing."""
-    try:
-        if os.path.exists(file_path):
-            backup_path = f"{file_path}.backup"
-            shutil.copy2(file_path, backup_path)
-            print(f"💾 Created backup: {backup_path}")
-    except Exception as e:
-        print(f"⚠️  Warning: Could not create backup: {str(e)}")
-
 def handle_text_editor_tool(tool_call):
     """Handle text editor tool calls from Claude."""
     try:
@@ -125,9 +115,6 @@ def handle_str_replace(file_path, old_str, new_str):
         if not path.exists():
             return "Error: File not found"
         
-        # Create backup
-        backup_file(file_path)
-        
         # Read file
         with open(path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -175,9 +162,6 @@ def handle_insert(file_path, insert_line, new_str):
         path = Path(file_path)
         if not path.exists():
             return "Error: File not found"
-        
-        # Create backup
-        backup_file(file_path)
         
         # Read file
         with open(path, 'r', encoding='utf-8') as f:
