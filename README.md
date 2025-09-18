@@ -22,6 +22,7 @@ Ejemplo basico de uso de la API de Claude con Python.
 - `04_system_prompt.py`: Chat interactivo con system prompt personalizado. Demuestra como usar system prompts para definir el comportamiento del asistente como un ayudante de codificación que proporciona explicaciones claras y concisas.
 - `05_temperature.py`: Chat interactivo que demuestra el uso del parámetro temperature para controlar la aleatoriedad de las respuestas.
 - `06_edit_text_tool.py`: Chat interactivo con capacidades de editor de texto integrado. Permite a Claude leer, crear, editar y modificar archivos directamente usando la herramienta de editor de texto de Anthropic.
+- `07_web_search_tool.py`: Chat interactivo con capacidades de búsqueda web en tiempo real. Combina el editor de texto con búsqueda web limitada a sitios de desarrollo (Stack Overflow, GitHub, docs oficiales).
 
 ## Herramienta de Editor de Texto (`06_edit_text_tool.py`)
 
