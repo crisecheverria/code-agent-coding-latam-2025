@@ -18,6 +18,18 @@ Los **Claude Agents** son programas que utilizan la API de Claude para crear exp
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
+
 ## ⚙️ Configuración Inicial
 
 ### 1. Instalar dependencias
@@ -41,6 +53,16 @@ ANTHROPIC_API_KEY=tu_api_key_aqui
 3. Genera una nueva API key en la sección "API Keys"
 
 ---
+
+
+
+
+
+
+
+
+
+
 
 ## 📚 Tutorial Progresivo
 
@@ -74,6 +96,17 @@ def main():
 - Respuesta simple
 
 ---
+
+
+
+
+
+
+
+
+
+
+
 
 ### 🔄 Nivel 2: Conversación con Memoria - `02_chat.py`
 
@@ -112,6 +145,17 @@ response = chat(messages)
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
 ### 💬 Nivel 3: Chat Interactivo - `03_chat.py`
 
 **Concepto**: Crea una interfaz de chat en terminal para interacción en tiempo real.
@@ -139,6 +183,17 @@ def main():
 - ➕ Comandos de salida
 
 ---
+
+
+
+
+
+
+
+
+
+
+
 
 ### 🎭 Nivel 4: Personalidad con System Prompts - `04_system_prompt.py`
 
@@ -171,6 +226,17 @@ response = chat(messages, system=system)
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
 ### 🎲 Nivel 5: Control de Creatividad - `05_temperature.py`
 
 **Concepto**: Controla la creatividad y determinismo de las respuestas.
@@ -201,6 +267,17 @@ def chat(messages, system=None, temperature=0.7):
 - ➕ Adaptabilidad al tipo de tarea
 
 ---
+
+
+
+
+
+
+
+
+
+
+
 
 ### 📝 Nivel 6: Herramientas de Edición - `06_edit_text_tool.py`
 
@@ -239,6 +316,17 @@ def chat(messages, system=None, temperature=0.7):
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
 ### 🔍 Nivel 7: Búsqueda Web - `07_web_search_tool.py`
 
 **Concepto**: Acceso a información actualizada en tiempo real.
@@ -276,6 +364,17 @@ def chat(messages, system=None, temperature=0.7):
 - ➕ Límites de seguridad
 
 ---
+
+
+
+
+
+
+
+
+
+
+
 
 ### ⚡ Nivel 8: Streaming Avanzado - `08_data_streaming.py`
 
@@ -320,6 +419,17 @@ def chat_stream(messages, system=None, temperature=0.7):
 
 ---
 
+
+
+
+
+
+
+
+
+
+
+
 ## 🏃‍♂️ Guía de Ejecución Rápida
 
 ```bash
@@ -335,6 +445,17 @@ uv run 08_data_streaming.py  # Con streaming avanzado
 ```
 
 ---
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🎯 Casos de Uso Prácticos
 
