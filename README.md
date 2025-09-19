@@ -1,97 +1,385 @@
-# Claude Agent
+# 🤖 Claude Agent Tutorial
 
-Ejemplo basico de uso de la API de Claude con Python.
+> **Aprende a construir agentes de IA con Claude paso a paso**
 
-## Setup
+Una guía completa y progresiva para desarrollar agentes inteligentes usando la API de Claude de Anthropic. Desde mensajes básicos hasta agentes avanzados con herramientas y streaming en tiempo real.
 
-1. Instalar dependencias con uv:
-   ```bash
-   uv pip install anthropic python-dotenv
-   ```
+---
 
-2. Crear archivo `.env` con tu API key:
-   ```
-   ANTHROPIC_API_KEY=tu_api_key_aqui
-   ```
+## 🚀 ¿Qué son los Claude Agents?
 
-## Codigo
+Los **Claude Agents** son programas que utilizan la API de Claude para crear experiencias de IA interactivas y potentes. Pueden:
 
-- `01_hello.py`: Ejemplo basico que envia un mensaje a Claude y recibe una respuesta. Usa el modelo `claude-4-sonnet-20250514` para generar un poema corto sobre el oceano.
-- `02_chat.py`: Ejemplo de conversacion con multiples mensajes. Mantiene el historial de la conversacion y demuestra como hacer preguntas de seguimiento usando el contexto previo.
-- `03_chat.py`: Chat interactivo por terminal con Claude. Permite mantener una conversación continua escribiendo mensajes en la consola. Escribe 'exit' o 'quit' para salir del chat.
-- `04_system_prompt.py`: Chat interactivo con system prompt personalizado. Demuestra como usar system prompts para definir el comportamiento del asistente como un ayudante de codificación que proporciona explicaciones claras y concisas.
-- `05_temperature.py`: Chat interactivo que demuestra el uso del parámetro temperature para controlar la aleatoriedad de las respuestas.
-- `06_edit_text_tool.py`: Chat interactivo con capacidades de editor de texto integrado. Permite a Claude leer, crear, editar y modificar archivos directamente usando la herramienta de editor de texto de Anthropic.
-- `07_web_search_tool.py`: Chat interactivo con capacidades de búsqueda web en tiempo real. Combina el editor de texto con búsqueda web limitada a sitios de desarrollo (Stack Overflow, GitHub, docs oficiales).
+- 💬 Mantener conversaciones complejas
+- 🛠️ Usar herramientas para interactuar con archivos y sistemas
+- 🔍 Buscar información en tiempo real
+- 📊 Procesar datos con streaming eficiente
+- 🎯 Adaptarse a diferentes roles y personalidades
 
-## Herramienta de Editor de Texto (`06_edit_text_tool.py`)
+---
 
-El archivo `06_edit_text_tool.py` implementa la herramienta de editor de texto integrada de Anthropic (`text_editor_20250728`), permitiendo a Claude interactuar directamente con archivos del sistema.
+## ⚙️ Configuración Inicial
 
-### Capacidades del Editor de Texto
+### 1. Instalar dependencias
 
-- **Leer archivos**: Ver contenido completo o rangos específicos de líneas con numeración
-- **Crear archivos**: Crear nuevos archivos con contenido especificado
-- **Editar archivos**: Reemplazar texto específico con coincidencia exacta
-- **Insertar texto**: Agregar contenido en líneas específicas
-- **Listar directorios**: Explorar contenidos de carpetas
-
-### Comandos Disponibles
-
-1. **view**: Lee archivos o lista directorios
-2. **create**: Crea nuevos archivos
-3. **str_replace**: Reemplaza texto específico en archivos existentes
-4. **insert**: Inserta texto en una línea específica
-
-### Características de Seguridad
-
-- Prevención de directory traversal (`..`, rutas absolutas)
-- Restricción a extensiones de archivo permitidas (`.py`, `.txt`, `.md`, `.json`, etc.)
-- Creación automática de respaldos antes de editar archivos existentes
-- Validación de coincidencias únicas para reemplazos de texto
-
-### Ejemplos de Uso
-
-```
-- "Lee el archivo test.py"
-- "Crea un archivo llamado fibonacci.py con código de ejemplo"
-- "Arregla el error de sintaxis en mi archivo"
-- "Lista los archivos en el directorio actual"
-- "Reemplaza la función antigua con una nueva implementación"
+```bash
+uv pip install anthropic python-dotenv
 ```
 
-## Parámetro Temperature
+### 2. Configurar API Key
 
-El parámetro `temperature` controla la aleatoriedad de las respuestas (rango: 0.0 - 1.0):
+Crea un archivo `.env` en la raíz del proyecto:
 
-- **Temperature Baja (0.0 - 0.3)**: Respuestas más deterministas y enfocadas. Ideal para respuestas fácticas y asistencia en programación.
-- **Temperature Media (0.4 - 0.7)**: Balance entre creatividad y coherencia. Perfecto para respuestas educativas y resolución de problemas.
-- **Temperature Alta (0.8 - 1.0)**: Alta creatividad y variedad en respuestas. Excelente para lluvia de ideas y narrativa.
-
-## Herramienta de Búsqueda Web (`07_web_search_tool.py`)
-
-El archivo `07_web_search_tool.py` combina las capacidades del editor de texto con búsqueda web en tiempo real usando la herramienta `web_search_20250305` de Anthropic.
-
-### Capacidades de Búsqueda Web
-
-- **Búsqueda en tiempo real**: Acceso a información actualizada más allá del conocimiento base de Claude
-- **Dominios limitados**: Restringido a sitios de desarrollo confiables para mayor seguridad
-- **Límite de búsquedas**: Máximo 5 búsquedas por conversación para optimizar rendimiento
-- **Citación automática**: Claude cita automáticamente las fuentes de información
-
-### Dominios Permitidos
-
-- **stackoverflow.com**: Soluciones de programación y resolución de problemas
-- **github.com**: Repositorios, documentación y ejemplos de código
-- **docs.python.org**: Documentación oficial de Python
-- **developer.mozilla.org**: Documentación web y JavaScript
-- **w3schools.com**: Tutoriales y referencias de desarrollo web
-
-### Ejemplos de Uso
-
+```env
+ANTHROPIC_API_KEY=tu_api_key_aqui
 ```
-- "Busca ejemplos de FastAPI en GitHub"
-- "¿Cuáles son las mejores prácticas para React en 2025?"
-- "Encuentra soluciones para errores de importación en Python"
-- "Busca documentación sobre async/await en Python"
+
+### 3. Obtener tu API Key
+
+1. Visita [console.anthropic.com](https://console.anthropic.com)
+2. Crea una cuenta o inicia sesión
+3. Genera una nueva API key en la sección "API Keys"
+
+---
+
+## 📚 Tutorial Progresivo
+
+### 🌟 Nivel 1: Primer Mensaje - `01_hello.py`
+
+**Concepto**: Aprende lo básico enviando un mensaje simple a Claude.
+
+```python
+import os
+from dotenv import load_dotenv
+from anthropic import Anthropic
+
+load_dotenv()
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+def main():
+    message = client.messages.create(
+        model="claude-3-7-sonnet-20250219",
+        max_tokens=1024,
+        messages=[{
+            "role": "user",
+            "content": "Escribe un poema corto sobre el oceano"
+        }]
+    )
+    print("Claude:", message.content[0].text)
 ```
+
+**✨ Características:**
+- Configuración básica del cliente
+- Mensaje único
+- Respuesta simple
+
+---
+
+### 🔄 Nivel 2: Conversación con Memoria - `02_chat.py`
+
+**Concepto**: Mantén el contexto entre mensajes para conversaciones más naturales.
+
+```python
+def add_user_message(messages, text):
+    messages.append({"role": "user", "content": text})
+
+def add_assistant_message(messages, text):
+    messages.append({"role": "assistant", "content": text})
+
+def chat(messages):
+    message = client.messages.create(
+        model="claude-3-7-sonnet-20250219",
+        max_tokens=1024,
+        messages=messages
+    )
+    return message.content[0].text
+
+# Mantener historial de conversación
+messages = []
+add_user_message(messages, "¿Qué es un coding agent?")
+response = chat(messages)
+add_assistant_message(messages, response)
+
+# Segunda pregunta con contexto
+add_user_message(messages, "Dame un ejemplo práctico")
+response = chat(messages)
+```
+
+**✨ Nuevas características:**
+- ➕ Historial de conversación
+- ➕ Contexto persistente
+- ➕ Funciones de utilidad
+
+---
+
+### 💬 Nivel 3: Chat Interactivo - `03_chat.py`
+
+**Concepto**: Crea una interfaz de chat en terminal para interacción en tiempo real.
+
+```python
+def main():
+    print("¡Hola! Soy Claude. Escribe 'exit' o 'quit' para salir.")
+    messages = []
+
+    while True:
+        user_input = input("Tu: ")
+        if user_input.lower() in ['exit', 'quit']:
+            print("¡Adiós! 👋")
+            break
+
+        add_user_message(messages, user_input)
+        response = chat(messages)
+        add_assistant_message(messages, response)
+        print(f"🤖 {response}")
+```
+
+**✨ Nuevas características:**
+- ➕ Interfaz de terminal interactiva
+- ➕ Loop de conversación continua
+- ➕ Comandos de salida
+
+---
+
+### 🎭 Nivel 4: Personalidad con System Prompts - `04_system_prompt.py`
+
+**Concepto**: Define el comportamiento y personalidad del agente.
+
+```python
+def chat(messages, system=None):
+    params = {
+        "model": "claude-3-7-sonnet-20250219",
+        "max_tokens": 1024,
+        "messages": messages
+    }
+
+    if system:
+        params["system"] = system
+
+    return client.messages.create(**params)
+
+# Definir personalidad
+system = "Eres un asistente de programación que proporciona explicaciones claras y concisas."
+
+# Usar en la conversación
+response = chat(messages, system=system)
+```
+
+**✨ Nuevas características:**
+- ➕ System prompts para personalidad
+- ➕ Comportamiento personalizable
+- ➕ Roles específicos (tutor, experto, etc.)
+
+---
+
+### 🎲 Nivel 5: Control de Creatividad - `05_temperature.py`
+
+**Concepto**: Controla la creatividad y determinismo de las respuestas.
+
+```python
+def chat(messages, system=None, temperature=0.7):
+    params = {
+        "model": "claude-3-7-sonnet-20250219",
+        "max_tokens": 1024,
+        "messages": messages,
+        "temperature": temperature  # 0.0 = determinista, 1.0 = creativo
+    }
+
+    if system:
+        params["system"] = system
+
+    return client.messages.create(**params)
+```
+
+**🌡️ Niveles de Temperature:**
+- **0.0 - 0.3**: Respuestas precisas y deterministas (ideal para código)
+- **0.4 - 0.7**: Balance entre precisión y creatividad
+- **0.8 - 1.0**: Máxima creatividad (ideal para brainstorming)
+
+**✨ Nuevas características:**
+- ➕ Control de creatividad
+- ➕ Respuestas más predecibles o variadas
+- ➕ Adaptabilidad al tipo de tarea
+
+---
+
+### 📝 Nivel 6: Herramientas de Edición - `06_edit_text_tool.py`
+
+**Concepto**: Claude puede leer, crear y modificar archivos directamente.
+
+```python
+def chat(messages, system=None, temperature=0.7):
+    params = {
+        "model": "claude-3-7-sonnet-20250219",
+        "max_tokens": 1024,
+        "messages": messages,
+        "temperature": temperature,
+        "tools": [{
+            "type": "text_editor_20250124",
+            "name": "str_replace_editor",
+        }]
+    }
+
+    if system:
+        params["system"] = system
+
+    return client.messages.create(**params)
+```
+
+**🛠️ Capacidades del Editor:**
+- **📖 view**: Leer archivos y directorios
+- **✏️ str_replace**: Reemplazar texto específico
+- **📄 create**: Crear nuevos archivos
+- **➕ insert**: Insertar texto en líneas específicas
+
+**✨ Nuevas características:**
+- ➕ Manipulación de archivos
+- ➕ Lectura de código
+- ➕ Edición asistida por IA
+- ➕ Gestión automática de herramientas
+
+---
+
+### 🔍 Nivel 7: Búsqueda Web - `07_web_search_tool.py`
+
+**Concepto**: Acceso a información actualizada en tiempo real.
+
+```python
+"tools": [
+    {
+        "type": "text_editor_20250124",
+        "name": "str_replace_editor",
+    },
+    {
+        "type": "web_search_20250305",
+        "name": "web_search",
+        "max_uses": 5,
+        "allowed_domains": [
+            "stackoverflow.com",
+            "github.com",
+            "docs.python.org",
+            "developer.mozilla.org",
+            "w3schools.com",
+        ],
+    }
+]
+```
+
+**🌐 Dominios Permitidos:**
+- **Stack Overflow**: Soluciones de programación
+- **GitHub**: Repositorios y ejemplos
+- **Documentación oficial**: Python, MDN, W3Schools
+
+**✨ Nuevas características:**
+- ➕ Búsqueda web en tiempo real
+- ➕ Información actualizada
+- ➕ Citación automática de fuentes
+- ➕ Límites de seguridad
+
+---
+
+### ⚡ Nivel 8: Streaming Avanzado - `08_data_streaming.py`
+
+**Concepto**: Respuestas en tiempo real con streaming de herramientas.
+
+```python
+def chat_stream(messages, system=None, temperature=0.7):
+    params = {
+        "model": "claude-3-7-sonnet-20250219",
+        "max_tokens": 4096,
+        "messages": messages,
+        "temperature": temperature,
+        "tools": [
+            {"type": "text_editor_20250124", "name": "str_replace_editor"},
+            {
+                "type": "web_search_20250305",
+                "name": "web_search",
+                "max_uses": 5,
+                "allowed_domains": ["stackoverflow.com", "github.com", ...]
+            }
+        ],
+        "betas": ["fine-grained-tool-streaming-2025-05-14"],
+    }
+
+    if system:
+        params["system"] = system
+
+    return client.beta.messages.stream(**params)
+```
+
+**⚡ Características del Streaming:**
+- **🚀 Respuestas instantáneas**: Ver texto mientras se genera
+- **🔧 Tool streaming**: Seguimiento en tiempo real del uso de herramientas
+- **📊 Progreso visual**: Indicadores de estado y progreso
+- **🔄 Manejo automático**: Procesamiento de respuestas complejas
+
+**✨ Nuevas características:**
+- ➕ Streaming de texto en tiempo real
+- ➕ Streaming de parámetros de herramientas
+- ➕ Experiencia de usuario mejorada
+- ➕ Manejo de múltiples herramientas simultáneamente
+
+---
+
+## 🏃‍♂️ Guía de Ejecución Rápida
+
+```bash
+# Ejecutar los ejemplos en orden
+uv run 01_hello.py          # Primer mensaje
+uv run 02_chat.py           # Conversación
+uv run 03_chat.py           # Chat interactivo
+uv run 04_system_prompt.py  # Con personalidad
+uv run 05_temperature.py    # Con creatividad
+uv run 06_edit_text_tool.py # Con edición de archivos
+uv run 07_web_search_tool.py # Con búsqueda web
+uv run 08_data_streaming.py  # Con streaming avanzado
+```
+
+---
+
+## 🎯 Casos de Uso Prácticos
+
+### 👨‍💻 Asistente de Programación
+```python
+system = "Eres un experto en Python. Ayudas a escribir código limpio y eficiente."
+```
+
+### 📚 Tutor Interactivo
+```python
+system = "Eres un tutor paciente. Guía paso a paso sin dar respuestas directas."
+```
+
+### 🔍 Investigador
+```python
+system = "Eres un investigador meticuloso. Siempre citas fuentes y verificas información."
+```
+
+---
+
+## 📖 Recursos Adicionales
+
+- 📘 [Documentación oficial de Anthropic](https://docs.anthropic.com)
+- 🛠️ [API Reference](https://docs.anthropic.com/claude/reference)
+- 💡 [Guías de mejores prácticas](https://docs.anthropic.com/claude/docs)
+- 🔧 [Herramientas disponibles](https://docs.anthropic.com/claude/docs/tool-use)
+
+---
+
+## 🤝 Contribuir
+
+¿Tienes ideas para mejorar los ejemplos? ¡Las contribuciones son bienvenidas!
+
+1. Fork el repositorio
+2. Crea tu rama de feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+---
+
+<div align="center">
+
+**🚀 ¡Construye el futuro con Claude Agents! 🚀**
+
+[Comenzar Tutorial](#-nivel-1-primer-mensaje---01_hellopy) • [API Docs](https://docs.anthropic.com) • [Ejemplos](/)
+
+</div>
