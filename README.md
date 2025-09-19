@@ -20,6 +20,20 @@ Los **Claude Agents** son programas que utilizan la API de Claude para crear exp
 
 <br>
 
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
 ## ⚙️ Configuración Inicial
 
 ### 1. Instalar dependencias
@@ -44,13 +58,19 @@ ANTHROPIC_API_KEY=tu_api_key_aqui
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
+<br>
 
 <br>
 
@@ -87,16 +107,21 @@ def main():
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### 🔄 Nivel 2: Conversación con Memoria - `02_chat.py`
 
@@ -135,16 +160,21 @@ response = chat(messages)
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### 💬 Nivel 3: Chat Interactivo - `03_chat.py`
 
@@ -174,16 +204,21 @@ def main():
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### 🎭 Nivel 4: Personalidad con System Prompts - `04_system_prompt.py`
 
@@ -216,16 +251,21 @@ response = chat(messages, system=system)
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### 🎲 Nivel 5: Control de Creatividad - `05_temperature.py`
 
@@ -258,16 +298,21 @@ def chat(messages, system=None, temperature=0.7):
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### 📝 Nivel 6: Herramientas de Edición - `06_edit_text_tool.py`
 
@@ -306,16 +351,21 @@ def chat(messages, system=None, temperature=0.7):
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### 🔍 Nivel 7: Búsqueda Web - `07_web_search_tool.py`
 
@@ -355,16 +405,21 @@ def chat(messages, system=None, temperature=0.7):
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
+<br>
 
 ### ⚡ Nivel 8: Streaming Avanzado - `08_data_streaming.py`
 
@@ -409,17 +464,21 @@ def chat_stream(messages, system=None, temperature=0.7):
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
-
+<br>
 <br>
 
 ## 🏃‍♂️ Guía de Ejecución Rápida
@@ -438,16 +497,19 @@ uv run 08_data_streaming.py  # Con streaming avanzado
 
 ---
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
+<br>
 
-
-
-
-
+<br>
 
 <br>
 
@@ -472,6 +534,20 @@ system = "Eres un investigador meticuloso. Siempre citas fuentes y verificas inf
 
 <br>
 
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
 ## 📖 Recursos Adicionales
 
 - 📘 [Documentación oficial de Anthropic](https://docs.anthropic.com)
@@ -480,8 +556,6 @@ system = "Eres un investigador meticuloso. Siempre citas fuentes y verificas inf
 - 🔧 [Herramientas disponibles](https://docs.anthropic.com/claude/docs/tool-use)
 
 ---
-
-<br>
 
 ## 🤝 Contribuir
 
