@@ -4,6 +4,26 @@
 
 Una guía completa y progresiva para desarrollar agentes inteligentes usando la API de Claude de Anthropic. Desde mensajes básicos hasta agentes avanzados con herramientas y streaming en tiempo real.
 
+## 📋 Navegación
+
+| Sección | Descripción |
+|---------|-------------|
+| [🚀 ¿Qué son los Claude Agents?](#-qué-son-los-claude-agents) | Introducción y capacidades |
+| [⚙️ Configuración](#️-configuración-inicial) | Setup inicial y API key |
+| [📚 Tutorial Progresivo](#-tutorial-progresivo) | 8 niveles de aprendizaje |
+| [🌟 Nivel 1: Primer Mensaje](#-nivel-1-primer-mensaje---01_hellopy) | Mensaje básico |
+| [🔄 Nivel 2: Conversación](#-nivel-2-conversación-con-memoria---02_chatpy) | Historial de chat |
+| [💬 Nivel 3: Chat Interactivo](#-nivel-3-chat-interactivo---03_chatpy) | Terminal interactiva |
+| [🎭 Nivel 4: System Prompts](#-nivel-4-personalidad-con-system-prompts---04_system_promptpy) | Personalidad |
+| [🎲 Nivel 5: Temperature](#-nivel-5-control-de-creatividad---05_temperaturepy) | Control de creatividad |
+| [📝 Nivel 6: Editor de Texto](#-nivel-6-herramientas-de-edición---06_edit_text_toolpy) | Manipulación de archivos |
+| [🔍 Nivel 7: Búsqueda Web](#-nivel-7-búsqueda-web---07_web_search_toolpy) | Búsqueda en tiempo real |
+| [⚡ Nivel 8: Streaming](#-nivel-8-streaming-avanzado---08_data_streamingpy) | Respuestas en streaming |
+| [🏃‍♂️ Guía Rápida](#️-guía-de-ejecución-rápida) | Comandos de ejecución |
+| [🎯 Casos de Uso](#-casos-de-uso-prácticos) | Ejemplos prácticos |
+| [📖 Recursos](#-recursos-adicionales) | Links útiles |
+| [🤝 Contribuir](#-contribuir) | Cómo colaborar |
+
 ---
 
 ## 🚀 ¿Qué son los Claude Agents?
