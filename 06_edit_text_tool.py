@@ -293,15 +293,8 @@ def process_claude_response(response, messages):
 def main():
     try:
         print(
-            "Hola! Soy Claude, un agente de codificación con capacidades de editor de texto."
+            "Hola! Soy Claude, un agente de codificación. Escribe 'exit' o 'quit' para salir."
         )
-        print(
-            "Puedes pedirme que lea, edite, o cree archivos. Escribe 'exit' o 'quit' para salir."
-        )
-        print("Ejemplos:")
-        print("- 'Lee el archivo test.py'")
-        print("- 'Crea un archivo llamado hello.py con código básico'")
-        print("- 'Arregla el error de sintaxis en mi archivo'")
         print()
 
         messages = []

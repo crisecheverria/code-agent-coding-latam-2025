@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 
@@ -19,10 +20,11 @@ def add_assistant_message(messages, content):
     messages.append(assistant_message)
 
 
-def chat(messages, system=None, temperature=0.7):
+def chat_stream(messages, system=None, temperature=0.7):
+    """Stream chat with fine-grained tool streaming enabled."""
     params = {
         "model": "claude-3-7-sonnet-20250219",
-        "max_tokens": 1024,
+        "max_tokens": 4096,  # Increased for streaming
         "messages": messages,
         "temperature": temperature,
         "tools": [
@@ -43,13 +45,14 @@ def chat(messages, system=None, temperature=0.7):
                 ],
             },
         ],
+        "betas": ["fine-grained-tool-streaming-2025-05-14"],
     }
 
     if system:
         params["system"] = system
 
-    message = client.messages.create(**params)
-    return message
+    # Use the beta streaming client with fine-grained tool streaming
+    return client.beta.messages.stream(**params)
 
 
 def handle_text_editor_tool(tool_call):
@@ -246,98 +249,117 @@ def handle_insert(file_path, insert_line, new_str):
         return f"Error during insertion: {str(e)}"
 
 
-def process_claude_response(response, messages):
-    """Process Claude's response and handle any tool calls."""
+def process_streaming_response(stream, messages):
+    """Process Claude's streaming response with fine-grained tool streaming."""
     response_content = []
     has_tool_use = False
     search_sources = []
+    current_tool_call = None
+    streaming_json = ""
 
-    for content in response.content:
-        if content.type == "text":
-            response_content.append(content)
-            print(f"🤖 {content.text}")
+    print("🚀 Starting streaming response...")
 
-            # Extract and display citations if present
-            if hasattr(content, "citations") and content.citations:
-                print("\n📚 Sources:")
-                for i, citation in enumerate(content.citations, 1):
-                    if hasattr(citation, "url") and hasattr(citation, "title"):
-                        print(f"  [{i}] {citation.title}")
-                        print(f"      {citation.url}")
-                        if hasattr(citation, "cited_text") and citation.cited_text:
-                            print(
-                                f"      \"{citation.cited_text[:100]}{'...' if len(citation.cited_text) > 100 else ''}\""
-                            )
-                        search_sources.append(
-                            {
-                                "title": citation.title,
-                                "url": citation.url,
-                                "cited_text": getattr(citation, "cited_text", ""),
-                            }
+    with stream as response_stream:
+        for event in response_stream:
+            if event.type == "message_start":
+                print("📨 Message started")
+
+            elif event.type == "content_block_start":
+                content_block = event.content_block
+                if content_block.type == "text":
+                    print("📝 Text block started")
+                elif content_block.type == "tool_use":
+                    print(f"🔧 Tool use started: {content_block.name}")
+                    current_tool_call = {
+                        "type": "tool_use",
+                        "id": content_block.id,
+                        "name": content_block.name,
+                        "input": {},
+                    }
+                    has_tool_use = True
+                elif content_block.type == "server_tool_use":
+                    print(f"🌐 Server tool use started: {content_block.name}")
+                    has_tool_use = True
+                elif content_block.type == "web_search_tool_result":
+                    print("📊 Web search results incoming")
+
+            elif event.type == "content_block_delta":
+                delta = event.delta
+                if delta.type == "text_delta":
+                    print(delta.text, end="", flush=True)
+                elif delta.type == "input_json_delta":
+                    # Stream tool parameters as they arrive (fine-grained streaming)
+                    if delta.partial_json:
+                        streaming_json += delta.partial_json
+                        print(
+                            f"⚡ Streaming tool param: {delta.partial_json}",
+                            end="",
+                            flush=True,
                         )
-                print()
 
-        elif content.type == "tool_use":
-            response_content.append(content)
-            print(f"🔧 Claude is using tool: {content.name}")
-            has_tool_use = True
-        elif content.type == "server_tool_use":
-            response_content.append(content)
-            print(
-                f"🌐 Claude is searching: {content.input.get('query', 'Unknown query')}"
-            )
-            has_tool_use = True
-        elif content.type == "web_search_tool_result":
-            response_content.append(content)
-            print(f"📊 Search completed with {len(content.content)} results")
+            elif event.type == "content_block_stop":
+                if current_tool_call and streaming_json:
+                    try:
+                        # Try to parse the complete JSON
+                        current_tool_call["input"] = json.loads(streaming_json)
+                        response_content.append(current_tool_call)
+                        print(f"\n✅ Tool call completed: {current_tool_call['name']}")
+                    except json.JSONDecodeError as e:
+                        # Handle invalid JSON as per documentation
+                        print(f"\n⚠️ Invalid JSON detected: {e}")
+                        invalid_json_wrapper = {"INVALID_JSON": streaming_json}
+                        current_tool_call["input"] = invalid_json_wrapper
+                        response_content.append(current_tool_call)
 
-            # Display search results
-            print("🔍 Search Results Found:")
-            for i, result in enumerate(content.content[:3], 1):  # Show first 3 results
-                if hasattr(result, "title") and hasattr(result, "url"):
-                    print(f"  [{i}] {result.title}")
-                    print(f"      {result.url}")
-                    if hasattr(result, "page_age"):
-                        print(f"      Last updated: {result.page_age}")
-            if len(content.content) > 3:
-                print(f"  ... and {len(content.content) - 3} more results")
-            print()
+                    streaming_json = ""
+                    current_tool_call = None
+                print("\n🏁 Content block completed")
 
-    # Add Claude's response to messages first (preserve all content including citations)
+            elif event.type == "message_delta":
+                if hasattr(event.delta, "stop_reason"):
+                    print(f"\n🛑 Stop reason: {event.delta.stop_reason}")
+
+            elif event.type == "message_stop":
+                print("\n✅ Message completed")
+
+    # Add Claude's response to messages
     add_assistant_message(messages, response_content)
 
-    # Then handle tool use if present
+    # Handle tool use if present
     if has_tool_use:
         tool_results = []
-        for content in response.content:
-            if content.type == "tool_use":
-                if content.name == "str_replace_editor":
-                    tool_result = handle_text_editor_tool(content)
+        for content in response_content:
+            if content["type"] == "tool_use":
+                tool_name = content["name"]
+
+                if tool_name == "str_replace_editor":
+                    # Check for invalid JSON
+                    if "INVALID_JSON" in content["input"]:
+                        tool_result = f"Error: Received invalid JSON for tool call. Raw content: {content['input']['INVALID_JSON']}"
+                    else:
+                        tool_result = handle_text_editor_tool(content)
                     print(f"📁 Tool result: {tool_result}")
 
                     tool_results.append(
                         {
                             "type": "tool_result",
-                            "tool_use_id": content.id,
+                            "tool_use_id": content["id"],
                             "content": tool_result,
                         }
                     )
 
-        # Add tool results to conversation
+        # Add tool results to conversation and continue if needed
         if tool_results:
             messages.append({"role": "user", "content": tool_results})
 
             try:
                 # Continue the conversation to get Claude's response to the tool result
-                follow_up = chat(
+                print("\n🔄 Processing tool results...")
+                follow_up_stream = chat_stream(
                     messages,
                     system="You are a helpful coding assistant with text editor and web search capabilities.",
                 )
-                # Only process follow-up if Claude has something more to say
-                if follow_up.content and any(
-                    c.type == "text" and c.text.strip() for c in follow_up.content
-                ):
-                    return process_claude_response(follow_up, messages)
+                return process_streaming_response(follow_up_stream, messages)
             except Exception as e:
                 print(f"Error in follow-up response: {e}")
                 return False
@@ -348,7 +370,7 @@ def process_claude_response(response, messages):
 def main():
     try:
         print(
-            "Hola! Soy Claude, un agente de codificación. Escribe 'exit' o 'quit' para salir."
+            "Hola! Soy Claude, un agente de codificaci�n. Escribe 'exit' o 'quit' para salir."
         )
         print()
 
@@ -361,9 +383,13 @@ def main():
                 print("Adios! 👋")
                 break
 
+            print("\n" + "=" * 50)
             add_user_message(messages, user_input)
-            response = chat(messages, system=system)
-            process_claude_response(response, messages)
+
+            # Start streaming response
+            stream = chat_stream(messages, system=system)
+            process_streaming_response(stream, messages)
+            print("=" * 50 + "\n")
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -371,3 +397,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
