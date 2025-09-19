@@ -18,17 +18,7 @@ Los **Claude Agents** son programas que utilizan la API de Claude para crear exp
 
 ---
 
-
-
-
-
-
-
-
-
-
-
-
+<br>
 
 ## ⚙️ Configuración Inicial
 
@@ -62,7 +52,7 @@ ANTHROPIC_API_KEY=tu_api_key_aqui
 
 
 
-
+<br>
 
 ## 📚 Tutorial Progresivo
 
@@ -430,6 +420,8 @@ def chat_stream(messages, system=None, temperature=0.7):
 
 
 
+<br>
+
 ## 🏃‍♂️ Guía de Ejecución Rápida
 
 ```bash
@@ -457,6 +449,8 @@ uv run 08_data_streaming.py  # Con streaming avanzado
 
 
 
+<br>
+
 ## 🎯 Casos de Uso Prácticos
 
 ### 👨‍💻 Asistente de Programación
@@ -476,6 +470,8 @@ system = "Eres un investigador meticuloso. Siempre citas fuentes y verificas inf
 
 ---
 
+<br>
+
 ## 📖 Recursos Adicionales
 
 - 📘 [Documentación oficial de Anthropic](https://docs.anthropic.com)
@@ -484,6 +480,8 @@ system = "Eres un investigador meticuloso. Siempre citas fuentes y verificas inf
 - 🔧 [Herramientas disponibles](https://docs.anthropic.com/claude/docs/tool-use)
 
 ---
+
+<br>
 
 ## 🤝 Contribuir
 
