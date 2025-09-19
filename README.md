@@ -67,3 +67,31 @@ El parámetro `temperature` controla la aleatoriedad de las respuestas (rango: 0
 - **Temperature Baja (0.0 - 0.3)**: Respuestas más deterministas y enfocadas. Ideal para respuestas fácticas y asistencia en programación.
 - **Temperature Media (0.4 - 0.7)**: Balance entre creatividad y coherencia. Perfecto para respuestas educativas y resolución de problemas.
 - **Temperature Alta (0.8 - 1.0)**: Alta creatividad y variedad en respuestas. Excelente para lluvia de ideas y narrativa.
+
+## Herramienta de Búsqueda Web (`07_web_search_tool.py`)
+
+El archivo `07_web_search_tool.py` combina las capacidades del editor de texto con búsqueda web en tiempo real usando la herramienta `web_search_20250305` de Anthropic.
+
+### Capacidades de Búsqueda Web
+
+- **Búsqueda en tiempo real**: Acceso a información actualizada más allá del conocimiento base de Claude
+- **Dominios limitados**: Restringido a sitios de desarrollo confiables para mayor seguridad
+- **Límite de búsquedas**: Máximo 5 búsquedas por conversación para optimizar rendimiento
+- **Citación automática**: Claude cita automáticamente las fuentes de información
+
+### Dominios Permitidos
+
+- **stackoverflow.com**: Soluciones de programación y resolución de problemas
+- **github.com**: Repositorios, documentación y ejemplos de código
+- **docs.python.org**: Documentación oficial de Python
+- **developer.mozilla.org**: Documentación web y JavaScript
+- **w3schools.com**: Tutoriales y referencias de desarrollo web
+
+### Ejemplos de Uso
+
+```
+- "Busca ejemplos de FastAPI en GitHub"
+- "¿Cuáles son las mejores prácticas para React en 2025?"
+- "Encuentra soluciones para errores de importación en Python"
+- "Busca documentación sobre async/await en Python"
+```

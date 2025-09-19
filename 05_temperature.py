@@ -16,7 +16,7 @@ def add_assistant_message(messages, text):
 
 def chat(messages, system=None, temperature=0.7):
     params = {
-        "model": "claude-4-sonnet-20250514",
+        "model": "claude-3-7-sonnet-20250219",
         "max_tokens": 1024,
         "messages": messages,
         "temperature": temperature

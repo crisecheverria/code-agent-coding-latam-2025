@@ -9,7 +9,7 @@ client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 def main():
     try:
         message = client.messages.create(
-            model="claude-4-sonnet-20250514",
+            model="claude-3-7-sonnet-20250219",
             max_tokens=1024,
             messages=[
                 {

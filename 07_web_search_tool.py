@@ -21,15 +21,14 @@ def add_assistant_message(messages, content):
 
 def chat(messages, system=None, temperature=0.7):
     params = {
-        "model": "claude-4-sonnet-20250514",
+        "model": "claude-3-7-sonnet-20250219",
         "max_tokens": 1024,
         "messages": messages,
         "temperature": temperature,
         "tools": [
             {
-                "type": "text_editor_20250728",
-                "name": "str_replace_based_edit_tool",
-                "max_characters": 10000,
+                "type": "text_editor_20250124",
+                "name": "str_replace_editor",
             },
             {
                 "type": "web_search_20250305",
@@ -54,51 +53,65 @@ def chat(messages, system=None, temperature=0.7):
 
 
 def handle_text_editor_tool(tool_call):
-    """Handle text editor tool calls from Claude."""
+    """Handle text editor tool calls from Claude according to official documentation."""
     try:
         input_params = tool_call.input
         command = input_params.get("command", "")
         file_path = input_params.get("path", "")
 
-        # Security check: prevent directory traversal and absolute paths
-        if ".." in file_path or file_path.startswith("/") or file_path.startswith("~"):
+        # Debug logging
+        print(f"🔍 Tool call - Command: {command}, Path: {file_path}")
+        print(f"🔍 All input params: {input_params}")
+
+        # Normalize path to current directory
+        if file_path.startswith("/"):
+            # Remove leading slash to make it relative to current directory
+            file_path = file_path.lstrip("/")
+            print(f"🔧 Normalized path: {file_path}")
+
+        # Security check: prevent directory traversal but allow relative paths
+        if ".." in file_path:
             return "Error: Invalid file path for security reasons"
 
-        # Restrict to certain file extensions for safety (allow files without extensions for directories)
+        # Restrict to certain file extensions for safety
         allowed_extensions = {
-            ".py",
-            ".txt",
-            ".md",
-            ".json",
-            ".yaml",
-            ".yml",
-            ".js",
-            ".ts",
-            ".html",
-            ".css",
-            ".sh",
-            "",
+            ".py", ".txt", ".md", ".json", ".yaml", ".yml",
+            ".js", ".ts", ".html", ".css", ".sh", ""
         }
         path = Path(file_path)
         if path.suffix.lower() not in allowed_extensions:
             return f"Error: File extension '{path.suffix}' not allowed for security reasons"
 
         if command == "view":
-            return handle_view(file_path, input_params.get("view_range"))
+            view_range = input_params.get("view_range")
+            return handle_view(file_path, view_range)
         elif command == "str_replace":
-            return handle_str_replace(
-                file_path,
-                input_params.get("old_str", ""),
-                input_params.get("new_str", ""),
-            )
+            old_str = input_params.get("old_str", "")
+            new_str = input_params.get("new_str", "")
+
+            # Workaround: If old_str is empty and file is empty, treat as content insertion
+            if old_str == "" and Path(file_path).exists():
+                try:
+                    with open(Path(file_path), "r", encoding="utf-8") as f:
+                        current_content = f.read()
+                    if current_content.strip() == "":
+                        print(
+                            "🔧 Workaround: Converting empty str_replace to file content insertion"
+                        )
+                        with open(Path(file_path), "w", encoding="utf-8") as f:
+                            f.write(new_str)
+                        return f"Successfully added content to {file_path}"
+                except Exception as e:
+                    print(f"Workaround failed: {e}")
+
+            return handle_str_replace(file_path, old_str, new_str)
         elif command == "create":
-            return handle_create(file_path, input_params.get("file_text", ""))
+            file_text = input_params.get("file_text", "")
+            return handle_create(file_path, file_text)
         elif command == "insert":
-            return handle_insert(
-                file_path,
-                input_params.get("insert_line", 0),
-                input_params.get("new_str", ""),
-            )
+            insert_line = input_params.get("insert_line", 0)
+            new_str = input_params.get("new_str", "")
+            return handle_insert(file_path, insert_line, new_str)
         else:
             return f"Error: Unknown command '{command}'"
 
@@ -227,17 +240,56 @@ def process_claude_response(response, messages):
     """Process Claude's response and handle any tool calls."""
     response_content = []
     has_tool_use = False
+    search_sources = []
 
     for content in response.content:
         if content.type == "text":
             response_content.append(content)
             print(f"🤖 {content.text}")
+
+            # Extract and display citations if present
+            if hasattr(content, 'citations') and content.citations:
+                print("\n📚 Sources:")
+                for i, citation in enumerate(content.citations, 1):
+                    if hasattr(citation, 'url') and hasattr(citation, 'title'):
+                        print(f"  [{i}] {citation.title}")
+                        print(f"      {citation.url}")
+                        if hasattr(citation, 'cited_text') and citation.cited_text:
+                            print(f"      \"{citation.cited_text[:100]}{'...' if len(citation.cited_text) > 100 else ''}\"")
+                        search_sources.append({
+                            'title': citation.title,
+                            'url': citation.url,
+                            'cited_text': getattr(citation, 'cited_text', '')
+                        })
+                print()
+
         elif content.type == "tool_use":
             response_content.append(content)
             print(f"🔧 Claude is using tool: {content.name}")
             has_tool_use = True
+        elif content.type == "server_tool_use":
+            response_content.append(content)
+            print(
+                f"🌐 Claude is searching: {content.input.get('query', 'Unknown query')}"
+            )
+            has_tool_use = True
+        elif content.type == "web_search_tool_result":
+            response_content.append(content)
+            print(f"📊 Search completed with {len(content.content)} results")
 
-    # Add Claude's response to messages first
+            # Display search results
+            print("🔍 Search Results Found:")
+            for i, result in enumerate(content.content[:3], 1):  # Show first 3 results
+                if hasattr(result, 'title') and hasattr(result, 'url'):
+                    print(f"  [{i}] {result.title}")
+                    print(f"      {result.url}")
+                    if hasattr(result, 'page_age'):
+                        print(f"      Last updated: {result.page_age}")
+            if len(content.content) > 3:
+                print(f"  ... and {len(content.content) - 3} more results")
+            print()
+
+    # Add Claude's response to messages first (preserve all content including citations)
     add_assistant_message(messages, response_content)
 
     # Then handle tool use if present
@@ -245,7 +297,7 @@ def process_claude_response(response, messages):
         tool_results = []
         for content in response.content:
             if content.type == "tool_use":
-                if content.name == "str_replace_based_edit_tool":
+                if content.name == "str_replace_editor":
                     tool_result = handle_text_editor_tool(content)
                     print(f"📁 Tool result: {tool_result}")
 
@@ -261,12 +313,20 @@ def process_claude_response(response, messages):
         if tool_results:
             messages.append({"role": "user", "content": tool_results})
 
-            # Continue the conversation to get Claude's response to the tool result
-            follow_up = chat(
-                messages,
-                system="You are a helpful coding assistant with text editor capabilities.",
-            )
-            return process_claude_response(follow_up, messages)
+            try:
+                # Continue the conversation to get Claude's response to the tool result
+                follow_up = chat(
+                    messages,
+                    system="You are a helpful coding assistant with text editor and web search capabilities.",
+                )
+                # Only process follow-up if Claude has something more to say
+                if follow_up.content and any(
+                    c.type == "text" and c.text.strip() for c in follow_up.content
+                ):
+                    return process_claude_response(follow_up, messages)
+            except Exception as e:
+                print(f"Error in follow-up response: {e}")
+                return False
 
     return True
 
@@ -286,7 +346,7 @@ def main():
         print()
 
         messages = []
-        system = "You are a helpful coding assistant with text editor capabilities. You can read, create, and modify files to help users with their programming tasks."
+        system = "You are a helpful coding assistant with text editor and web search capabilities. You can read, create, and modify files to help users with their programming tasks. You can also search the web for up-to-date information."
 
         while True:
             user_input = input("Tu: ")

@@ -16,7 +16,7 @@ def add_assistant_message(messages, text):
 
 def chat(messages):
     message = client.messages.create(
-        model="claude-4-sonnet-20250514", max_tokens=1024, messages=messages
+        model="claude-3-7-sonnet-20250219", max_tokens=1024, messages=messages
     )
 
     return message.content[0].text
