@@ -56,13 +56,21 @@ Los **Claude Agents** son programas que utilizan la API de Claude para crear exp
 
 ## ⚙️ Configuración Inicial
 
-### 1. Instalar dependencias
+### 1. Instalar uv y crear entorno
+
+```bash
+pipx install uv
+uv init claude-agent-tutorial
+cd claude-agent-tutorial
+```
+
+### 2. Instalar dependencias
 
 ```bash
 uv add anthropic python-dotenv
 ```
 
-### 2. Configurar API Key
+### 3. Configurar API Key
 
 Crea un archivo `.env` en la raíz del proyecto:
 
@@ -70,7 +78,7 @@ Crea un archivo `.env` en la raíz del proyecto:
 ANTHROPIC_API_KEY=tu_api_key_aqui
 ```
 
-### 3. Obtener tu API Key
+### 4. Obtener tu API Key
 
 1. Visita [console.anthropic.com](https://console.anthropic.com)
 2. Crea una cuenta o inicia sesión
