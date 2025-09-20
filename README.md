@@ -59,7 +59,7 @@ Los **Claude Agents** son programas que utilizan la API de Claude para crear exp
 ### 1. Instalar dependencias
 
 ```bash
-uv pip install anthropic python-dotenv
+uv add anthropic python-dotenv
 ```
 
 ### 2. Configurar API Key
